@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "SCM_db";
+$dbname = "SCM2_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password);
@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 } 
 
 
-$sql = "CREATE DATABASE SCM_db";
+$sql = "CREATE DATABASE SCM2_db";
 
 if ($conn->query($sql) === TRUE) {
     echo "Database created successfully  ";
@@ -47,6 +47,7 @@ item_id INT(4) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 item_name VARCHAR(20) NOT NULL,
 item_price DEC(3,2) NOT NULL,
 item_quantity INT(7) NOT NULL,
+item_type VARCHAR(15) NOT NULL,
 last_ordered DATE,
 minimum_stock INT(5) NOT NULL,
 maximum_stock INT(5) NOT NULL,

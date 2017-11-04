@@ -4,6 +4,22 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>SCM system</title>
+    
+<script type="text/javascript">
+    function chgAction(num)
+    '''Function that changes the action of the form nd then submits it to the controller'''
+    {
+        //document.getElementById("myForm").action = "<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>";
+        document.getElementById("myForm").submit();
+
+        if (num == 0){ //if the number of validation error is 0 change the form
+
+            document.getElementById("myForm").action = "Update_Stock.php";
+            document.getElementById("myForm").submit();
+        }
+    }
+</script>
+    
 <link href="css/StyleSheet.css" rel="stylesheet" type="text/css" />
 <style>
             table {
@@ -25,7 +41,7 @@
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname = "SCM_db";
+        $dbname = "SCM2_db";
 
         // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);
@@ -36,7 +52,9 @@
     
         $sql = "SELECT * FROM stock";		
         $result = $conn->query($sql);
+    
     ?>
+    
     <div class="header-wrap">
 	<div class="logo">
 		<h1>SCM system</h1>
@@ -60,11 +78,13 @@
                         <h1>View Stock</h1>
                     </div>
                     <div class="panel"></div>
-                        <form id= "myForm" method="POST">
+                        <form id= "myForm" method="POST" action="Update_Stock.php">
                             
                              <label > <span>Type</span>
                                 <input type="text" name="type" class="input_text" value="<?php echo $type;?>"> <!--diplays the users last input back to the text box -->
                             </label>
+                            
+                            <input type="submit" class="button" value="Register" onclick= "chgAction(0)"/>
                             <br>
                             <br>
                             <br>
@@ -77,6 +97,7 @@
                                     <th>Name</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
+                                    <th>Type</th>
                                     <th>Staff checked</th>
                                 </tr>
                                 <tbody>
@@ -88,6 +109,7 @@
                                         <td><?php echo $row['item_name']; ?></td>
                                         <td><?php echo "£" .$row['item_price'];?></td>
                                         <td><?php echo $row['item_quantity'];?></td>
+                                        <td><?php echo $row['item_type'];?></td>
                                         <td><?php echo $row['staff_check'];?></td>
                                     </tr>
                                     <?php endwhile ?>
