@@ -36,7 +36,7 @@
             die("Connection failed: " . $conn->connect_error);
         } 
         
-        $ID = $_POST["type"];
+        $ID = $_POST["Stock_ID"];
         $Item_id = $Item_name = $Item_price = $Item_quantity = $Item_type = $Last_ordered = $Minimum_stock = $Maximum_stock = $Staff_check = "";
     
         $sql = "SELECT * FROM stock WHERE item_id = $ID";		
@@ -64,8 +64,9 @@
         <div class="menu">
             <ul>
                 <li><a href="home.html" >Home</a></li>
-                <li><a href="staff_page.html">Log In</a></li>
+                <li><a href="Sale.php">Sale</a></li>
                 <li><a href="Stock.php" class="active">Stock</a></li>
+                <li><a href="Order_Stock.php">Order</a></li>
             </ul>
         </div>
     </div>

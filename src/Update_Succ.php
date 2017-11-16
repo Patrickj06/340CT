@@ -18,8 +18,9 @@
     <div class="menu">
 		<ul>
         	<li><a href="home.html" >Home</a></li>
-            <li><a href="staff_page.html">Log In</a></li>
+            <li><a href="Sale.php">Sale</a></li>
             <li><a href="Stock.php" class="active">Stock</a></li>
+            <li><a href="Order_Stock.php">Order</a></li>
         </ul>
     </div>
     </div>

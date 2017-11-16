@@ -16,14 +16,13 @@
     <div class="menu-wrap">
         <div class="menu">
             <ul>
-                <li><a href="home.html" class="active">Home</a></li>
+                <li><a href="home.html">Home</a></li>
                 <li><a href="Sale.php">Sale</a></li>
                 <li><a href="Stock.php">Stock</a></li>
-                <li><a href="Order_Stock.php">Order</a></li>
+                <li><a href="Order_Stock.php" class="active">Order</a></li>
             </ul>
         </div>
     </div>
     
 </body>
 </html>
-    

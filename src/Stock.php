@@ -64,8 +64,9 @@
     <div class="menu">
 		<ul>
         	<li><a href="home.html" >Home</a></li>
-            <li><a href="staff_page.html">Log In</a></li>
+            <li><a href="Sale.php">Sale</a></li>
             <li><a href="Stock.php" class="active">Stock</a></li>
+            <li><a href="Order_Stock.php">Order</a></li>
         </ul>
     </div>
     </div>
@@ -79,17 +80,11 @@
                     </div>
                     <div class="panel"></div>
                         <form id= "myForm" method="POST" action="Update_Stock.php">
-                            
-                             <label > <span>Type</span>
-                                <input type="text" name="type" class="input_text" value="<?php echo $type;?>"> <!--diplays the users last input back to the text box -->
+                            <div class="contact-form mar-top30">
+                             <label > <span>Stock ID</span>
+                                <input type="text" name="Stock_ID" class="input_text" value="<?php echo $StockID;?>"> <!--diplays the users last input back to the text box -->
                             </label>
-                            
-                            <input type="submit" class="button" value="Register" onclick= "chgAction(0)"/>
-                            <br>
-                            <br>
-                            <br>
-                            
-                            
+                       
                             
                             <table id="stock_table">
                                 <tr>
@@ -116,7 +111,8 @@
                                 </tbody>
                                 
                             </table>
-                                
+                                 <input type="submit" class="button" value="Submit" onclick= "chgAction(0)"/>
+                            </div>  
                         </form>
 
                             
