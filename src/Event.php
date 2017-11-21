@@ -233,6 +233,8 @@ class Event_Loop
                     $Event->Notify_Low_Stock($LowStock);
                     echo "<script>window.location.href='Update_Succ.php';</script>";
                     break;
+                case '4':
+                    $Event->
                     
 
             }

@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "SCM2_db";
+$dbname = "SCM3_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password);
@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 } 
 
 
-$sql = "CREATE DATABASE SCM2_db";
+$sql = "CREATE DATABASE SCM3_db";
 
 if ($conn->query($sql) === TRUE) {
     echo "Database created successfully  ";
@@ -36,6 +36,7 @@ last_name VARCHAR(30) NOT NULL,
 role VARCHAR(30) NOT NULL,
 salary INT(6) UNSIGNED NOT NULL
 )";
+
 if ($conn->query($sql) === TRUE) {
     echo "Table staff created successfully  ";
 } else {
@@ -57,6 +58,29 @@ REFERENCES staff(staff_id)
 )";
 if ($conn->query($sql) === TRUE) {
     echo "Table stock created successfully  ";
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+$sql = "CREATE TABLE orders (
+order_id INT(4) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+order_price INT(5) NOT NULL,
+order_date DATE NOT NULL
+)";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Table order created successfully  ";
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+$sql = "CREATE TABLE stock_order (
+order_id INT(4),
+item_id INT(4),
+CONSTRAINT order_id_pk PRIMARY KEY (order_id,item_id)
+)";
+if ($conn->query($sql) === TRUE) {
+    echo "Table stock_order created successfully  ";
 } else {
     echo "Error creating table: " . $conn->error;
 }
