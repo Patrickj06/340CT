@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "SCM2_db";
+$dbname = "SCM5_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -21,7 +21,7 @@ if ($conn->query($sql) === TRUE) {
 }
 
 $sql = "INSERT INTO stock (item_name, item_price, item_quantity, item_type, last_ordered , minimum_stock, maximum_stock, staff_check)
-VALUES ('milk', 2.50, 1, 'Dariy', 30/10/2017, 100, 200, 1)";
+VALUES ('Milk', 2.50, 1, 'Dariy', 30/10/2017, 100, 200, 1)";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";
@@ -30,7 +30,7 @@ if ($conn->query($sql) === TRUE) {
 }
 
 $sql = "INSERT INTO stock (item_name, item_price, item_quantity, item_type, last_ordered , minimum_stock, maximum_stock, staff_check)
-VALUES ('bread', 1.50, 1, 'Bakery', 30/10/2017, 50, 100, 1)";
+VALUES ('Bread', 1.50, 1, 'Bakery', 30/10/2017, 50, 100, 1)";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";
@@ -39,7 +39,7 @@ if ($conn->query($sql) === TRUE) {
 }
 
 $sql = "INSERT INTO stock (item_name, item_price, item_quantity, item_type, last_ordered , minimum_stock, maximum_stock, staff_check)
-VALUES ('eggs', 2.75, 20, 'Eggs', 31/10/2017, 50, 75, 1)";
+VALUES ('Eggs', 2.75, 20, 'Eggs', 31/10/2017, 50, 75, 1)";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";

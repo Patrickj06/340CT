@@ -41,7 +41,7 @@
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname = "SCM2_db";
+        $dbname = "SCM5_db";
 
         // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);

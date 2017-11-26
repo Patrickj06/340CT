@@ -18,72 +18,26 @@ function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
 }
     
-function AddItem(item,num){   
+function AddItem(Title,Text,Textbox,Input){   
+    //alert(Input);
+    var dropdowns = document.getElementById("myDropdown");
+    var child = document.getElementById(Input);
+    var output = document.getElementById(Input).id;
+    var milk = document.getElementById("Milk");
+    var bread = document.getElementById("Bread");
+    var eggs = document.getElementById("Eggs");
     
-    if (num == 0) {
-        document.getElementById("Item1").innerHTML = "Quantity :";
-        document.getElementById("item1").style.visibility = "visible";
+        document.getElementById(Text).innerHTML = "Quantity :";
+        document.getElementById(Textbox).style.visibility = "visible";
         document.getElementById("submit").style.visibility = "visible";
-        switch(item){
-            case '1':
-                document.getElementById("Item1Title").innerHTML = "Eggs";
-                document.getElementById("item1").name = "eggs";
-                break;
-            case '2':
-                document.getElementById("Item1Title").innerHTML = "Milk";
-                document.getElementById("item1").name = "milk";
-                break; 
-            case '3':
-                document.getElementById("Item1Title").innerHTML = "Bread";
-                document.getElementById("item1").name = "bread";
-                break;
-        }
+        document.getElementById("Inputs").value += (output + " ");
+        document.getElementById(Title).innerHTML = output;
+        document.getElementById(Textbox).name = output;
+        child.style.display = "none";
         
-        
-        
-    
-    } else if (num == 1){
-        document.getElementById("Item2").innerHTML = "Quantity :";
-        document.getElementById("item2").style.visibility = "visible";
-        switch(item){
-            case '1':
-                document.getElementById("Item2Title").innerHTML = "Eggs";
-                document.getElementById("item2").name = "eggs";
-                break;
-            case '2':
-                document.getElementById("Item2Title").innerHTML = "Milk";
-                document.getElementById("item2").name = "milk";
-                break; 
-            case '3':
-                document.getElementById("Item2Title").innerHTML = "Bread";
-                document.getElementById("item2").name = "bread";
-                break;
-        }
-        
-        
-    } else {
-        document.getElementById("Item3").innerHTML = "Quantity :";
-        document.getElementById("item3").style.visibility = "visible";
-        switch(item){
-            case '1':
-                document.getElementById("Item3Title").innerHTML = "Eggs";
-                document.getElementById("item3").name = "eggs";
-                break;
-            case '2':
-                document.getElementById("Item3Title").innerHTML = "Milk";
-                document.getElementById("item3").name = "milk";
-                break; 
-            case '3':
-                document.getElementById("Item3Title").innerHTML = "Bread";
-                document.getElementById("item3").name = "bread";
-                break;
-        }
-        
-        
-    }
-    document.getElementById("Eggs").onclick = function() { AddItem('1',num+1)}; 
-    document.getElementById("Milk").onclick = function() { AddItem('2',num+1)};
-    document.getElementById("Bread").onclick = function() { AddItem('3',num+1)};
+        milk.onclick = function() {AddItem(Title+3,Text+3,Textbox+3,milk.id)};
+        bread.onclick = function() {AddItem(Title+3,Text+3,Textbox+3,bread.id)};
+        eggs.onclick = function() {AddItem(Title+3,Text+3,Textbox+3,eggs.id)};
     
 }
 
@@ -113,12 +67,12 @@ window.onclick = function(event) {
     
 <body>
     <?php
-        $i = 0;
+        $i = 1;
     
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname = "SCM2_db";
+        $dbname = "SCM5_db";
 
         // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);
@@ -158,12 +112,10 @@ window.onclick = function(event) {
                             <div class="dropdown">
                                 <button onclick="myFunction()" class="dropbtn">Add Item</button>
                                 <div id="myDropdown" class="dropdown-content">
-                                     
+                                     <?php while( $row = $result->fetch_assoc()) : ?>
                                          
-                                        <a id = "Eggs" class = "button" onclick = "AddItem('1',0)">Eggs</a>
-                                        <a id = "Milk" class = "button" onclick = "AddItem('2',0)">Milk</a>
-                                        <a id = "Bread" class = "button" onclick = "AddItem('3',0)">Bread</a> 
-                                    
+                                        <a id = "<?php echo $row['item_name'];?>" onclick = "AddItem(1,2,3,this.id)"><?php echo $row['item_name'];?></a>
+                                    <?php endwhile ?>
                                 </div>
                            </div>
                             
@@ -171,30 +123,31 @@ window.onclick = function(event) {
                                 <div class="contact-form mar-top30">
                                     
                                     
-                                    <h1 id = "Item1Title"></h1>
-                                    <label > <span id = "Item1"> </span>
-                                        <input id = "item1" type="text" name="item1" class="input_text" value="<?php echo $Item1;?>">
+                                    <h1 id = "1"></h1>
+                                    <label > <span id = "2"> </span>
+                                        <input id = "3" type="text" name="item1" class="input_text" value="<?php echo $Item1;?>">
                                         
                                     </label>
                     
-                                    <h1 id = "Item2Title"></h1>
-                                    <label > <span id = "Item2"></span>
-                                        <input type="text" id="item2" class="input_text" value="<?php echo $Item2;?>"> <!--diplays the users last input back to the text box -->
+                                    <h1 id = "4"></h1>
+                                    <label > <span id = "5"></span>
+                                        <input type="text" id="6" class="input_text" value="<?php echo $Item2;?>"> <!--diplays the users last input back to the text box -->
                                     </label>
                                     
-                                    <h1 id = "Item3Title"></h1>
-                                    <label > <span id = Item3></span>
-                                        <input type="text" id = "item3" class="input_text" value="<?php echo $Item3;?>"> <!--diplays the users last input back to the text box -->
+                                    <h1 id = "7"></h1>
+                                    <label > <span id = 8></span>
+                                        <input type="text" id = "9" class="input_text" value="<?php echo $Item3;?>"> <!--diplays the users last input back to the text box -->
                                     </label>
                                     <input type="hidden" name="ID" class="input_text" value="<?php echo "3";?>">
+                                    <input id = "Inputs" type="hidden" name="Inputs" class="input_text" value="">
                                     
                                     <input id = "submit" type="submit" class="button" value="Submit" />
                                     
                                     <script>
                                         
-                                        document.getElementById("item1").style.visibility = "hidden";
-                                        document.getElementById("item2").style.visibility = "hidden";
-                                        document.getElementById("item3").style.visibility = "hidden";
+                                        document.getElementById("3").style.visibility = "hidden";
+                                        document.getElementById("6").style.visibility = "hidden";
+                                        document.getElementById("9").style.visibility = "hidden";
                                         document.getElementById("submit").style.visibility = "hidden";
                                          
                                     </script>
