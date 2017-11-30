@@ -7,7 +7,6 @@
 <link href="css/StyleSheet.css" rel="stylesheet" type="text/css" />
     
 <script>
-    
 
     
     
@@ -18,27 +17,44 @@ function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
 }
     
-function AddItem(Title,Text,Textbox,Input){   
-    //alert(Input);
+function AddItem(Input){   
+    
     var dropdowns = document.getElementById("myDropdown");
     var child = document.getElementById(Input);
     var output = document.getElementById(Input).id;
-    var milk = document.getElementById("Milk");
-    var bread = document.getElementById("Bread");
-    var eggs = document.getElementById("Eggs");
-    
-        document.getElementById(Text).innerHTML = "Quantity :";
-        document.getElementById(Textbox).style.visibility = "visible";
-        document.getElementById("submit").style.visibility = "visible";
-        document.getElementById("Inputs").value += (output + " ");
-                document.getElementById(Title).innerHTML = output;
-                document.getElementById(Textbox).name = output;
-                child.style.display = "none";
-        
-        milk.onclick = function() {AddItem(Title+3,Text+3,Textbox+3,milk.id)};
-        bread.onclick = function() {AddItem(Title+3,Text+3,Textbox+3,bread.id)};
-        eggs.onclick = function() {AddItem(Title+3,Text+3,Textbox+3,eggs.id)};
-    
+
+    document.getElementById("submit").style.visibility = "visible";
+    document.getElementById("Inputs").value += (output + " ");
+    child.style.display = "none";
+
+    var textbox = document.createElement("INPUT");
+    var title = document.createElement("H1");
+    var text = document.createElement("LABEL");
+    var span = document.createElement("SPAN");
+    var title_text = document.createTextNode(Input);
+    var text_text = document.createTextNode("Quantity :");
+
+    //add new heading 
+    title.setAttribute("for", (output + "Title"));
+    title.appendChild(title_text);
+    document.getElementById("Form").appendChild(title);
+
+    //add new lable 
+    text.setAttribute("id", (output + "quantity"));
+    document.getElementById("Form").appendChild(text);
+
+    //add new span inside the label
+    span.setAttribute("id", (output + "Quantity"));
+    span.appendChild(text_text);
+    document.getElementById(output + "quantity").appendChild(span);
+
+    //add new textbox inside the label
+    textbox.setAttribute("type", "text");
+    textbox.setAttribute("id", output);
+    textbox.setAttribute("name", output);
+    textbox.setAttribute("class", "input_text");
+    document.getElementById(output + "quantity").appendChild(textbox);
+
 }
 
 // Close the dropdown if the user clicks outside of it
@@ -67,7 +83,7 @@ window.onclick = function(event) {
     
 <body>
     <?php
-        $i = 0;
+        $i = 1;
     
         $servername = "localhost";
         $username = "root";
@@ -114,44 +130,26 @@ window.onclick = function(event) {
                                 <div id="myDropdown" class="dropdown-content">
                                      <?php while( $row = $result->fetch_assoc()) : ?>
                                          
-                                        <a id = "<?php echo $row['item_name'];?>" onclick = "AddItem(1,2,3,this.id)"><?php echo $row['item_name'];?></a>
+                                        <a id = "<?php echo $row['item_name'];?>" onclick = "AddItem(this.id)"><?php echo $row['item_name'];?></a>
                                     <?php endwhile ?>
                                 </div>
                            </div>
                             
                             <form id= "myForm" method="POST" action ="Event.php">
-                                <div class="contact-form mar-top30">
-                                    
-                                    
-                                    <h1 id = "1"></h1>
-                                    <label > <span id = "2"> </span>
-                                        <input id = "3" type="text" name="item1" class="input_text" value="<?php echo $Item1;?>">
-                                        
-                                    </label>
-                    
-                                    <h1 id = "4"></h1>
-                                    <label > <span id = "5"></span>
-                                        <input type="text" id="6" class="input_text" value="<?php echo $Item2;?>"> <!--diplays the users last input back to the text box -->
-                                    </label>
-                                    
-                                    <h1 id = "7"></h1>
-                                    <label > <span id = 8></span>
-                                        <input type="text" id = "9" class="input_text" value="<?php echo $Item3;?>"> <!--diplays the users last input back to the text box -->
-                                    </label>
+                                <div id = "Form" class="contact-form mar-top30">
+    
                                     <input type="hidden" name="ID" class="input_text" value="<?php echo "4";?>">
-                                    
-                                    <input id = "submit" type="submit" class="button" value="Submit" />
                                     <input id = "Inputs" type="hidden" name="Inputs" class="input_text" value="">
-                                    <script>
-                                        
-                                        document.getElementById("3").style.visibility = "hidden";
-                                        document.getElementById("6").style.visibility = "hidden";
-                                        document.getElementById("9").style.visibility = "hidden";
-                                        document.getElementById("submit").style.visibility = "hidden";
-                                         
-                                    </script>
                                     
-    </div>
+                                </div>
+                                <div class="contact-form mar-top30">
+                                <input id = "submit" type="submit" class="button" value="Submit" />
+                                </div>
+                                <script> 
+                                    document.getElementById("submit").style.visibility = "hidden";
+                                    document.getElementById("Inputs").value = ("");
+
+                                </script>
                             </form>
                         </div>
                     </div>

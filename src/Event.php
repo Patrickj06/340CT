@@ -65,7 +65,6 @@ class Event
             $j = count($inputs) -1;
             for($i = 0; $i < $j ; $i++) {
                 $key = $inputs[$i];
-                
                 $value = $_POST[$inputs[$i]];
                 $this->input_values = array_push_assoc($this->input_values,$key,$value);
             }
@@ -382,7 +381,7 @@ class Mediator
                             $this->Stock_processor->Update_Stock_Level($event);
                             $LowStock = $this->Stock_processor->Check_Stock_Levels();
                             $this->Notifcation_processor->Notify_Low_Stock($LowStock);
-                            echo "<script>window.location.href='Update_Succ.php';</script>";
+                            echo "<script>window.location.href='Sale_Succ.php';</script>";
                         }
                     }
                     break;
@@ -400,7 +399,7 @@ class Mediator
                         } else {
                             $this->Order_processor->Add_Order($event);
                             $this->Order_processor->Add_Items_to_Order($event);
-                            echo "<script>window.location.href='Update_Succ.php';</script>";
+                            echo "<script>window.location.href='Order_Succ.php';</script>";
                         }
                     }
                     break;
