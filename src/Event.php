@@ -1,4 +1,4 @@
-<!--
+
 <!DOCTYPE html>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -27,7 +27,6 @@
     
 </body>
 </html>
--->
 <?php
 
 
@@ -62,16 +61,15 @@ class Event
         } else if ($type == '3' or $type == '4'){
             
             $inputs = explode(" ",$_POST['Inputs']);
-            print_r($inputs);
             $this->input_values =array();
-            $j = count($inputs);
+            $j = count($inputs) -1;
             for($i = 0; $i < $j ; $i++) {
                 $key = $inputs[$i];
                 
                 $value = $_POST[$inputs[$i]];
                 $this->input_values = array_push_assoc($this->input_values,$key,$value);
             }
-            print_r($this->input_values);
+            //print_r($this->input_values);
             
            
         }
@@ -114,12 +112,13 @@ class Stock_Processor {
             $result = $GLOBALS['conn']->query($sql);
             while($row = $result->fetch_assoc()) {
                 if ($i_value > $row['item_quantity']){
-                    $ErrorQueue->push($i);
+                    $message = "There isnt enough " . $i . " in stock";
+                    $ErrorQueue->push($message);
                 }
             }
         
         }
-        //return $ErrorQueue;
+        return $ErrorQueue;
     }
     
     public function Update_Stock_Level($event){
@@ -154,7 +153,7 @@ class Stock_Processor {
         
         while( $row = $result->fetch_assoc()) {
             if ($row['item_quantity'] < $row['Minimum_stock']){
-                $id = $row['item_name'];
+                $message = $row['item_name'] . "is low on stock";
                 $lowStock->push($id);
             }
         }
@@ -162,7 +161,6 @@ class Stock_Processor {
     }
     
     public function Check_Stock_Max($event){
-        echo "1";
         
         
         $maxStock = new SplQueue();
@@ -173,7 +171,10 @@ class Stock_Processor {
         while( $row = $result->fetch_assoc()) {
             
             if (($i_value + $row['item_quantity']) > $row['maximum_stock']){
-                $maxStock->push($i);
+                echo $row['item_quantity'];
+                echo $i_value;
+                $message = $i . " will go over maximum amount of stock";
+                $maxStock->push($message);
             }
         }
         return $maxStock;
@@ -265,21 +266,78 @@ class Notifcation_Processor
             alert('$message');
             
             </script>";
+        }
     }
-
-}
-}
-class Validation_Processor
-{
-    public function Validate_Sales($event){
-        if ($event->Bread == "" and $event->Eggs == "" and $event->Milk == ""){
+    
+    public function Notify_Error($Error_List){
+        while(!$Error_List->isEmpty()) {
+           $error = $Error_List->pop();
+            echo $error;
             
+            echo "<script>
+            alert('$error');
+            
+            </script>";
         }
     }
 }
+class Validation_Processor
+{
+    public function Validate_SalesOrders($event){
+        $errorList = new SplQueue(); 
+        foreach($event->input_values as $i=>$i_value){
+            if (!preg_match("/^[0-9]*$/",$i_value) or $i_value == ""){
+                $message = $i . " input must be a number";
+                $errorList->push($message);
+            }
+        }
+
+        return $errorList;
+    }
+    
+    public function Validate_Stock_Update($event){
+
+        $errorList = new SplQueue(); 
+        if (!preg_match("/^[a-zA-Z ]*$/",$event->Item_name)) {
+            $message = "Name must contain letters only";
+            $errorList->push($message);
+        }
+        if (!preg_match("/^[1-9]\d*(\.\d+)?$/",$event->Item_price)) {
+            $message = "Price must contain numbers only with a . followed by 2 numbers";
+            $errorList->push($message);
+        }
+        if (!preg_match("/^[0-9]*$/",$event->Item_quantity)) {
+            $message = "Quantity must contain number only";
+            $errorList->push($message);
+        }
+        if (!preg_match("/^[a-zA-Z ]*$/",$event->Item_type)) {
+            $message = "Type must contain letters only";
+            $errorList->push($message);
+        }
+        if (!preg_match("/^[0-9]*$/",$event->Minimum)) {
+            $message = "Minimum Stock must contain numbers only";
+            $errorList->push($message);
+        }
+        if (!preg_match("/^[0-9]*$/",$event->Maximum)) {
+            $message = "Maximum Stock must contain numbers only";
+            $errorList->push($message);
+        }
+        if (Validate_Min_Max($event-Minimum, $event-Maximum) == true){
+            $message = "Minimum Stock must be less than Maximum";
+            $errorList->push($message);
+        }
+        return $errorList;
+    }
+    function Validate_Min_Max($Min,$Max){
+        if ($Min >= $Max or $Max <= $Min){
+            return true;
+        }
+        return false;
+    }
+}
 
 
-class Event_Loop 
+class Mediator 
 {
     function __construct(){
         
@@ -289,46 +347,88 @@ class Event_Loop
         $this->Validation_processor = new Validation_Processor();
     }
       
-      public function start($Queue)
+      public function start($event)
      {
-         while(!$Queue->isEmpty()) {
-            $event = $Queue->pop();
-             $id = $event->type;
-             echo $event->type;
+          $id = $event->type;
           	switch($id)
             {
                 case '1':
                     echo "1";
                     break;
                 case '2': //Update Stock Event 
-                    $this->Stock_processor->Update_Stock($event);
-                    $LowStock = $this->Stock_processor->Check_Stock_Levels();
-                    $this->Notifcation_processor->Notify_Low_Stock($LowStock);
-                    echo "<script>window.location.href='Update_Succ.php';</script>";
+                    $Error_List = $this->Validation_processor->Validate_SalesOrders($event);
+                    if (!$Error_List->isEmpty()){
+                        $this->Notifcation_processor->Notify_Error($Error_List);
+                        echo "<script>window.location.href='Stock.php';</script>";
+                    } else {
+                        $this->Stock_processor->Update_Stock($event);
+                        $LowStock = $this->Stock_processor->Check_Stock_Levels();
+                        $this->Notifcation_processor->Notify_Error($LowStock);
+                        echo "<script>window.location.href='Update_Succ.php';</script>";
+                    }
                     
                     break;
                 case '3':
-                    $errors = $this->Stock_processor->Check_Stock($event);
-                    $this->Stock_processor->Update_Stock_Level($event);
-                    $LowStock = $this->Stock_processor->Check_Stock_Levels();
-                    $this->Notifcation_processor->Notify_Low_Stock($LowStock);
-                    //echo "<script>window.location.href='Update_Succ.php';</script>";
+                    $Validate_Errors = $this->Validation_processor->Validate_SalesOrders($event);
+                    if (!$Validate_Errors->isEmpty()){
+                        $this->Notifcation_processor->Notify_Error($Validate_Errors);
+                        echo "<script>window.location.href='Sale.php';</script>";
+                    } else {
+                        $Stock_Errors = $this->Stock_processor->Check_Stock($event);
+                        if (!$Stock_Errors->isEmpty()){
+                            $this->Notifcation_processor->Notify_Error($Stock_Errors);
+                            echo "<script>window.location.href='Sale.php';</script>";
+                        } else {
+                            $this->Stock_processor->Update_Stock_Level($event);
+                            $LowStock = $this->Stock_processor->Check_Stock_Levels();
+                            $this->Notifcation_processor->Notify_Low_Stock($LowStock);
+                            echo "<script>window.location.href='Update_Succ.php';</script>";
+                        }
+                    }
                     break;
                 case '4':
-                    $MaxStock = $this->Stock_processor->Check_Stock_Max($event);
-                    $this->Notifcation_processor->Notify_Max_Order($MaxStock);
-                    /*if (!$MaxStock->isEmpty){
+                    $Validate_Errors = $this->Validation_processor->Validate_SalesOrders($event);
+                    if (!$Validate_Errors->isEmpty()){
+                        $this->Notifcation_processor->Notify_Error($Validate_Errors);
+                        echo "v";
                         echo "<script>window.location.href='Order_Stock.php';</script>";
-                    }*/
-                    $this->Order_processor->Add_Order($event);
-                    $this->Order_processor->Add_Items_to_Order($event);
-                    
+                    } else {
+                        $MaxStock_Errors = $this->Stock_processor->Check_Stock_Max($event);
+                        if (!$MaxStock_Errors->isEmpty()){
+                            $this->Notifcation_processor->Notify_Error($MaxStock_Errors);
+                            echo "<script>window.location.href='Order_Stock.php';</script>";
+                        } else {
+                            $this->Order_processor->Add_Order($event);
+                            $this->Order_processor->Add_Items_to_Order($event);
+                            echo "<script>window.location.href='Update_Succ.php';</script>";
+                        }
+                    }
                     break;
-            }
-             
-        }
+
           
      }
+      }
+}
+
+
+
+
+class Event_Loop {
+    
+    function __construct(){
+        $this->mediator = new Mediator();   
+        echo "created";
+    }
+    
+    public function Start_Event_Loop($EventQueue){
+        echo "here";
+        while(!$EventQueue->isEmpty()) {
+            $event = $EventQueue->pop();
+            echo "start";
+            $this->mediator->start($event);
+    }
+        
+    }
 }
 
 function array_push_assoc($array, $key, $value){
@@ -338,6 +438,7 @@ function array_push_assoc($array, $key, $value){
 
 
 $EventQueue = new SplQueue();
+print_r($EventQueue);
 $ID = $_POST["ID"];
 
 $event = new Event($ID);
@@ -346,38 +447,6 @@ $EventQueue->push($event);
 //print_r($EventQueue);
 
 $eventLoop = new Event_Loop();
-$eventLoop->start($EventQueue);
-
-
+$eventLoop->Start_Event_Loop($EventQueue);
 
 ?>
-<!--
-<!DOCTYPE html>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>SCM system</title>
-<link href="css/StyleSheet.css" rel="stylesheet" type="text/css" />
-</head>
-    
-<body>
-    <div class="header-wrap">
-	<div class="logo">
-		<h1>SCM system</h1>
-    </div>
-</div>
-    <div class="menu-wrap">
-        <div class="menu">
-            <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="Sale.php">Sale</a></li>
-                <li><a href="Stock.php">Stock</a></li>
-                <li><a href="Order_Stock.php">Order</a></li>
-            </ul>
-        </div>
-    </div>
-    
-</body>
-</html>
--->
